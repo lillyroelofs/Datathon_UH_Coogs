@@ -8,7 +8,7 @@ import pandas as pd
 dataframe = pd.read_csv("Users.csv")
 date1 = date(1970,1,1)
 count=0
-all_days = []
+todays_date = datetime.now().date()
 for i in range(len(dataframe['date'])):
     date_str = dataframe['date'][i]
     if '-' in date_str:
@@ -30,9 +30,12 @@ for i in range(len(dataframe['date'])):
     except:
         count=count+1
         days=0
+
+    if((date2-todays_date).days>0):
+        days=0
+    if((date2-date1).days<0):
+        days=0
     dataframe['date'][i] = days
-    all_days.append(days)
-print(all_days)
 
 
     
