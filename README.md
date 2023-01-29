@@ -16,7 +16,7 @@ Devpost Submission: https://devpost.com/software/gsl#updates
 
 Presentation: https://docs.google.com/presentation/d/1QCEtkUO2A1qZk1i285-ZQdpGUbs9gptCNNG0ddf7P08/edit?usp=sharing 
 
-## Test set performance
+## Test set performance:
 
 Average difference between predicted and ground truths values:
 
