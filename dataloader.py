@@ -12,7 +12,7 @@ from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 import torchvision
 import torch
-
+from PIL import Image
 
 
 #document id is img name
@@ -49,7 +49,7 @@ class FaceusermarksDataset(Dataset):
         """
         self.bill_frame = pd.read_csv(csv_file)
         self.root_dir = root_dir
-        self.transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
+        self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256,256)),torchvision.transforms.ToTensor()])
 
     def __len__(self):
         return len(self.bill_frame)
@@ -61,23 +61,29 @@ class FaceusermarksDataset(Dataset):
         img_name = os.path.join(self.root_dir,
                                 self.bill_frame.iloc[idx, 0])
         img_name = img_name + '.jpg'
-        image = io.imread(img_name)
-        user = self.bill_frame.iloc[idx, 1:]
-        user = np.array([user])
-        details = user[1:4]
-        sample = {'image': image, 'user_details': details}
-        print(type(sample['user_details']))
+        img = Image.open(img_name)
 
-        resize_transform = torchvision.transforms.Resize(256)
-        
-        sample['image'] = resize_transform(sample['image'])
-        return self.transform(sample)
+      
 
-train_dataset = FaceusermarksDataset(csv_file="Users.csv",root_dir=os.getcwd(),transform=True)
+        user = self.bill_frame.iloc[idx, 2:4]
+        user = np.array(user)
+        user_num = np.array([user[0],user[1]])
+        print(user_num)
+        print(type(user_num[0]))
+        details = user_num
+        img=img.resize([512,512])
+        img.save("testing.jpg")
+        img = self.transform(img)
+        details = torch.from_numpy(details)
+    
+        return img, details
+
+train_dataset = FaceusermarksDataset(csv_file="Users_days_updated.csv",root_dir=os.getcwd(),transform=True)
 train_dataloader = DataLoader(train_dataset,batch_size=1,shuffle=True)
 
 
-train = next(iter(train_dataloader))
-print(train)
+img, details = next(iter(train_dataloader))
+print(img.shape)
+print(details.shape)
 # plt.imshow(train['image'], cmap="gray")
 # plt.show()
