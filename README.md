@@ -9,8 +9,11 @@ Our motivation for the problem was to avoid using the OCR data completely by tra
 ## Important links: 
 
 Minimum Training Loss Model: https://drive.google.com/file/d/1jxDidzaPycfYZ2N60g6eFXEDZMEIKt_o/view?usp=sharing
+
 Minimum Val Loss Model: https://drive.google.com/file/d/1yqSXq6eBHzuPrQZwUpKu3qOYefXumUnJ/view?usp=sharing 
+
 Devpost Submission: https://devpost.com/software/gsl#updates 
+
 
 
 
