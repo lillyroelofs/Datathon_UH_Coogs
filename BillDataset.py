@@ -20,31 +20,32 @@ class BillDataset(Dataset):
         """
         self.bill_frame = pd.read_csv(csv_file)
         self.root_dir = root_dir
-        self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256,256)),torchvision.transforms.ToTensor()])
+        self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((512,512)),torchvision.transforms.ToTensor()])
 
     def __len__(self):
         return len(self.bill_frame)
 
     def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
 
-        img_name = os.path.join(self.root_dir,
-                                self.bill_frame.iloc[idx, 0])
+        img_name = os.path.join("img",self.bill_frame.iloc[idx, 1])
         img_name = img_name + '.jpg'
+        #print(img_name)
         img = Image.open(img_name)
 
       
 
-        user = self.bill_frame.iloc[idx, 2:4]
+        user = self.bill_frame.iloc[idx, 3:5]
         user = np.array(user)
         user_num = np.array([user[0],user[1]])
-        print(user_num)
-        print(type(user_num[0]))
+        #print(user_num)
+        #print(type(user_num[0]))
         details = user_num
         img=img.resize([512,512])
         img.save("testing.jpg")
         img = self.transform(img)
+        if img.shape[0] == 1:
+            #print(f"{img_name} has only 1 channel")
+            img = img * torch.ones((3,512,512))
         details = torch.from_numpy(details)
     
         return img, details
