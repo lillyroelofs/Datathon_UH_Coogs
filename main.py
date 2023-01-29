@@ -8,8 +8,11 @@ from datetime import date
 from datetime import datetime
 from email.utils import formatdate
 
+filename = 'test_transactions.csv' #Users.csv
+final_filename = 'updated_test.csv'
+
 ## import data
-user_data = pd.read_csv('../Users.csv')
+user_data = pd.read_csv(filename) 
 
 ## assumptions: document id and user id are correct. 
 # errors associated with...
@@ -73,4 +76,4 @@ for i in range(len(user_data['date'])):
         days=0
     user_data['date'][i] = days
 
-user_data.to_csv("Updated_Users.csv")
+user_data.to_csv(final_filename)
