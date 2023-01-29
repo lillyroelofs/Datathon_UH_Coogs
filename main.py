@@ -39,6 +39,7 @@ user_data = user_data.drop('vendor_name', axis=1)
 # replace the series in the dataframe
 user_data.insert(4, 'vendor_names', names)
 
+#asdasd
 
 # fixing the date -- GEORGE
 
