@@ -7,9 +7,14 @@ import matplotlib.pyplot as plt
 from datetime import date
 from datetime import datetime
 from email.utils import formatdate
+from sklearn.utils import shuffle
+import math
 
-filename = 'test_transactions.csv' #Users.csv
-final_filename = 'updated_test.csv'
+## initialize 
+filename = 'Users.csv' # test_transactions.csv
+final_filename = 'train.csv' # test.csv
+training = 1 # used to set whether we are looking at the training or testing set. if we are doing training, need to randomize and split 
+extra_name = 'validation.csv'
 
 ## import data
 user_data = pd.read_csv(filename) 
@@ -17,17 +22,19 @@ user_data = pd.read_csv(filename)
 ## assumptions: document id and user id are correct. 
 # errors associated with...
     # amount - additional decimals places, empty field, decimal placed in the wrong location, completely wrong amount, comma instead of decimal?
-    # date - different formats 
+    # date - different formats, incorrect date/extra numbers
+    # vendor name - misspelled
 
-## cleaning the amount 
-# ridding of an empty/NaN cells 
+## ridding the dataframe of empty/NaN cells 
 user_data = user_data.replace([np.NaN], 0)
+
+## cleaning the amount column
 # rounding all incorrect decimal places to 2
 for ind, val in enumerate(user_data['amount']):
     if len(str(val).split(".")[1]) > 2:
         user_data['amount'] = user_data['amount'].replace([val], round(val, 2)) # this will change any of the cells with this unique value to the rounded one (which is the goal anyways so that's fine)
 
-## fixing the name
+## standardizing the name
 # separate the series, change it, remove the old, and insert it
 # constants
 bad_chars = set('''-()'&?:!"\/;.,0123456789 ''')
@@ -43,8 +50,7 @@ user_data = user_data.drop('vendor_name', axis=1)
 user_data.insert(4, 'vendor_names', names)
 
 
-# fixing the date -- GEORGE
-
+## fixing the date -- GEORGE
 date1 = date(1970,1,1)
 count=0
 todays_date = datetime.now().date()
@@ -76,4 +82,13 @@ for i in range(len(user_data['date'])):
         days=0
     user_data['date'][i] = days
 
-user_data.to_csv(final_filename)
+## for training, randomize and split. for testing, save to csv. 
+if training == 1:
+    user_data = shuffle(user_data, random_state = 3) # shuffle
+    split_point = math.ceil(len(user_data)*0.8)  # split
+    train_data = user_data.iloc[:split_point]
+    valid_data = user_data.iloc[split_point:] # no overlap since python cuts off before the last number 
+    train_data.to_csv(final_filename)
+    valid_data.to_csv(extra_name)
+else: 
+    user_data.to_csv(final_filename)
