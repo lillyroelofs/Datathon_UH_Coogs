@@ -9,7 +9,7 @@ from BillDataset import BillDataset
 import os
 
 BATCH_SIZE = 16
-EPOCHS = 100
+EPOCHS = 10000
 
 device = torch.device('cuda:0') 
 model = BellModel().to(device)
