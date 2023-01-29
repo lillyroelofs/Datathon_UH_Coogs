@@ -1,6 +1,6 @@
 ## Datathon_UH_Coogs
 
-This project is a submission to the 2023 Rice Datathon from George Bittar, Subin Varghese, Lilly Roelofs. The competition project was hosted by Bill.com, and the goal was to "create a model that assigns each receipt to its corresponding user entry in Users.csv/test_transcations.csv by only using the information from the image and OCR data.
+This project is a submission to the 2023 Rice Datathon from George Bittar, Subin Varghese, Lilly Roelofs. The competition project was hosted by Bill.com, and the goal was to "create a model that assigns each receipt to its corresponding user entry in Users.csv/test_transcations.csv by only using the information from the image and OCR data."
 
 ## General approach: 
 
