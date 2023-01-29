@@ -6,3 +6,5 @@ Users - Copy.csv
 __pycache__/BillDataset.cpython-310.pyc
 model/__pycache__/model.cpython-38.pyc
 
+min_training_loss_model.pth
+min_val_loss_model.pth
