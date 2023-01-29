@@ -72,7 +72,7 @@ for epoch in range(EPOCHS):
             torch.save(model.state_dict(), "min_training_loss_model.pth")
 
     val_loss = test_val_accuracy(model, validation_dataloader)
-    val_loss_list.append(val_loss)
+    val_loss_list.append(val_loss.detach().cpu())
     if val_loss < min_val_loss:
         print(f"min validation loss at epoch: {epoch}, Loss {val_loss}")
         torch.save(model.state_dict(), "min_val_loss_model.pth")
