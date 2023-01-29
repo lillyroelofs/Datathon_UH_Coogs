@@ -20,6 +20,7 @@ class BillDataset(Dataset):
         """
         self.bill_frame = pd.read_csv(csv_file)
         self.root_dir = root_dir
+        self.img_size = 512
         self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((512,512)),torchvision.transforms.ToTensor()])
 
     def __len__(self):
@@ -41,7 +42,7 @@ class BillDataset(Dataset):
         #print(type(user_num[0]))
         details = user_num
         img=img.resize([512,512])
-        img.save("testing.jpg")
+        #img.save("testing.jpg")
         img = self.transform(img)
         if img.shape[0] == 1:
             #print(f"{img_name} has only 1 channel")

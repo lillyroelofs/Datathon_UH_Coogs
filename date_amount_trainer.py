@@ -7,19 +7,22 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from BillDataset import BillDataset
 import os
+from model.double_densenet import DoubleDenseNet
 
-BATCH_SIZE = 6
-EPOCHS = 100
+BATCH_SIZE = 4
+EPOCHS = 10000
 
-device = torch.device('cuda') 
-model = BellModel().to(device)
+device = torch.device('cuda:0') 
+model = DoubleDenseNet().to(device)
 
 criterion = torch.nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0001)
+optimizer1 = optim.SGD(model.Date_head.parameters(),lr=0.00001)
+optimizer2 = optim.SGD(model.Amount_head.parameters(),lr=0.00001)
 
 min_loss = 10000000000
 min_val_loss = 10000000000
 loss_list = []
+val_loss_list = []
 
 train_dataset = BillDataset(csv_file="train.csv",root_dir=os.getcwd(),transform=True)
 val_dataset = BillDataset(csv_file="validation.csv",root_dir=os.getcwd(),transform=True)
@@ -32,7 +35,7 @@ def test_val_accuracy(model, dataloader):
     samples = 0 
     with torch.no_grad():
         for batch, data in enumerate(dataloader):
-            samples +=2
+            samples +=1
             img, gt = data
             out = model(img.to(device))
             #amount_date.to(device)
@@ -40,7 +43,7 @@ def test_val_accuracy(model, dataloader):
             out_date = torch.squeeze(out["Date"].float().to(device))
             amount_gt = gt[:,0].to(device).float()
             date_gt = gt[:,1].to(device).float()
-            loss = criterion(out_date.float(),date_gt) + criterion(amount.float(), amount_gt)
+            loss = torch.mean(torch.abs(out_date.float()-date_gt)) + torch.mean(torch.abs(amount.float() - amount_gt)) 
             val_loss = val_loss + loss
     return val_loss/samples
 
@@ -48,6 +51,8 @@ itr = 0
 for epoch in range(EPOCHS):
     print(f"epoch {epoch}")
     for batch, data in enumerate(train_dataloader):
+        optimizer1.zero_grad()
+        optimizer2.zero_grad()
 
         #print(f" batch {batch}")
         img, gt = data
@@ -59,9 +64,14 @@ for epoch in range(EPOCHS):
         out_date = torch.squeeze(out["Date"].float().to(device))
         amount_gt = gt[:,0].to(device).float()
         date_gt = gt[:,1].to(device).float()
-        loss = criterion(out_date.float(),date_gt) + criterion(amount.float(), amount_gt) 
-        loss.backward()
-        optimizer.step()
+        print(f"sample predictions: date {out_date[1]}, amount {amount[1]}")
+        loss1 = torch.mean(torch.abs(out_date.float()-date_gt))
+        loss2 = torch.mean(torch.abs(amount.float() - amount_gt)) 
+        loss1.backward()
+        optimizer1.step()
+        loss2.backward()
+        optimizer2.step()
+        loss = loss1 + loss2
         loss_list.append(loss.detach().cpu())
         itr+=1
         print(f"itr: {itr}, Loss {loss}")
@@ -71,15 +81,19 @@ for epoch in range(EPOCHS):
             torch.save(model.state_dict(), "min_training_loss_model.pth")
 
     val_loss = test_val_accuracy(model, validation_dataloader)
+    val_loss_list.append(val_loss.detach().cpu())
     if val_loss < min_val_loss:
         print(f"min validation loss at epoch: {epoch}, Loss {val_loss}")
         torch.save(model.state_dict(), "min_val_loss_model.pth")
         min_val_loss = val_loss
+    
+    plt.plot(loss_list)
+    plt.savefig("train_loss_plot.png")
+    plt.close()
+    plt.plot(val_loss_list)
+    plt.savefig("val_loss_plot.png")
+    plt.close()
 
-
-# plt.plot(loss_list)
-# plt.savefig("loss_plot.png")
-# plt.close()
 
 # #check save and load model
 torch.save(model.state_dict(), "model.pth")
