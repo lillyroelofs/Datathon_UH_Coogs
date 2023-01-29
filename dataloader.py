@@ -1,40 +1,11 @@
-from __future__ import print_function, division
-import os
-from tkinter import image_names
-from matplotlib import transforms
 import torch
 import pandas as pd
-from skimage import io, transform
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
-import cv2
 from torch.utils.data import Dataset, DataLoader
-import matplotlib.pyplot as plt
 import torchvision
 import torch
 from PIL import Image
-
-
-#document id is img name
-# bill_frame = pd.read_csv('Users.csv')
-
-# n = 306
-# img_name = bill_frame.iloc[n, 0]
-# img_name = img_name + '.jpg'
-
-# image = io.imread(img_name)
-# user_details = bill_frame.iloc[n, 1:]
-# user = np.asarray(user_details)
-# #user = user.astype('float').reshape(-1, 2)
-# details = user[1:4]
-# sample = {'image': image, 'user_details': details}
-
-# vectorizer = CountVectorizer()
-# sentence_vectors = vectorizer.fit_transform([details[2]])
-# print(details[2])
-# print(sentence_vectors.toarray())
-
-
+import os
 
 class FaceusermarksDataset(Dataset):
     """BILL dataset."""
