@@ -3,4 +3,6 @@ model.pth
 *.jpg
 Users - Copy.csv
 .vscode/settings.json
+__pycache__/BillDataset.cpython-310.pyc
+model/__pycache__/model.cpython-38.pyc
 
