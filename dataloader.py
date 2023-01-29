@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 import os
 from tkinter import image_names
+from matplotlib import transforms
 import torch
 import pandas as pd
 from skimage import io, transform
@@ -9,7 +10,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import cv2
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
-from torchvision import transforms, utils
+import torchvision
 import torch
 
 
@@ -48,7 +49,7 @@ class FaceusermarksDataset(Dataset):
         """
         self.bill_frame = pd.read_csv(csv_file)
         self.root_dir = root_dir
-        self.transform = transform
+        self.transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
 
     def __len__(self):
         return len(self.bill_frame)
@@ -65,16 +66,18 @@ class FaceusermarksDataset(Dataset):
         user = np.array([user])
         details = user[1:4]
         sample = {'image': image, 'user_details': details}
+        print(type(sample['user_details']))
 
-        if self.transform:
-            sample['image'] = cv2.resize(sample['image'],dsize=(100,100),interpolation=cv2.INTER_CUBIC)
-        print(sample['user_details'])
-        return sample
+        resize_transform = torchvision.transforms.Resize(256)
+        
+        sample['image'] = resize_transform(sample['image'])
+        return self.transform(sample)
 
 train_dataset = FaceusermarksDataset(csv_file="Users.csv",root_dir=os.getcwd(),transform=True)
-train_dataloader = DataLoader(train_dataset,batch_size=32,shuffle=True)
+train_dataloader = DataLoader(train_dataset,batch_size=1,shuffle=True)
 
 
 train = next(iter(train_dataloader))
-plt.imshow(train['image'], cmap="gray")
-plt.show()
+print(train)
+# plt.imshow(train['image'], cmap="gray")
+# plt.show()
