@@ -1,2 +1,6 @@
+model/__pycache__/model.cpython-310.pyc
+model.pth
 *.jpg
 Users - Copy.csv
+.vscode/settings.json
+
