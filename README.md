@@ -12,9 +12,9 @@ Minimum Training Loss Model: https://drive.google.com/file/d/1jxDidzaPycfYZ2N60g
 
 Minimum Val Loss Model: https://drive.google.com/file/d/1yqSXq6eBHzuPrQZwUpKu3qOYefXumUnJ/view?usp=sharing 
 
-Devpost Submission: https://devpost.com/software/gsl#updates 
-
 Presentation: https://docs.google.com/presentation/d/1QCEtkUO2A1qZk1i285-ZQdpGUbs9gptCNNG0ddf7P08/edit?usp=sharing 
+
+Devpost Submission: https://devpost.com/software/gsl#updates 
 
 ## Test set performance:
 
