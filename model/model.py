@@ -7,9 +7,11 @@ class BellModel(torch.nn.Module):
 
     def __init__(self):
         super(BellModel, self).__init__()
-        self.encoding_dimension = 21841
+        #self.encoding_dimension = 21841 # for convnext
+        self.encoding_dimension = 1000 #for densenet
+        
         self.Activation = torch.nn.ReLU()
-        self.Feature_Extraction = timm.create_model('convnext_large_in22k', pretrained=True)
+        self.Feature_Extraction = timm.create_model('densenet264')
         
         #self.DropOut = F.dropout
         

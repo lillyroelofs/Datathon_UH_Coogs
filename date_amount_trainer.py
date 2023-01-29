@@ -8,18 +8,19 @@ from torch.utils.data import DataLoader
 from BillDataset import BillDataset
 import os
 
-BATCH_SIZE = 6
+BATCH_SIZE = 16
 EPOCHS = 100
 
-device = torch.device('cuda') 
+device = torch.device('cuda:0') 
 model = BellModel().to(device)
 
 criterion = torch.nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0001)
+optimizer = optim.Adam(model.parameters())
 
 min_loss = 10000000000
 min_val_loss = 10000000000
 loss_list = []
+val_loss_list = []
 
 train_dataset = BillDataset(csv_file="train.csv",root_dir=os.getcwd(),transform=True)
 val_dataset = BillDataset(csv_file="validation.csv",root_dir=os.getcwd(),transform=True)
@@ -32,7 +33,7 @@ def test_val_accuracy(model, dataloader):
     samples = 0 
     with torch.no_grad():
         for batch, data in enumerate(dataloader):
-            samples +=2
+            samples +=1
             img, gt = data
             out = model(img.to(device))
             #amount_date.to(device)
@@ -71,15 +72,19 @@ for epoch in range(EPOCHS):
             torch.save(model.state_dict(), "min_training_loss_model.pth")
 
     val_loss = test_val_accuracy(model, validation_dataloader)
+    val_loss_list.append(val_loss)
     if val_loss < min_val_loss:
         print(f"min validation loss at epoch: {epoch}, Loss {val_loss}")
         torch.save(model.state_dict(), "min_val_loss_model.pth")
         min_val_loss = val_loss
+    
+    plt.plot(loss_list)
+    plt.savefig("train_loss_plot.png")
+    plt.close()
+    plt.plot(val_loss_list)
+    plt.savefig("val_loss_plot.png")
+    plt.close()
 
-
-# plt.plot(loss_list)
-# plt.savefig("loss_plot.png")
-# plt.close()
 
 # #check save and load model
 torch.save(model.state_dict(), "model.pth")

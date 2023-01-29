@@ -20,7 +20,8 @@ class BillDataset(Dataset):
         """
         self.bill_frame = pd.read_csv(csv_file)
         self.root_dir = root_dir
-        self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((512,512)),torchvision.transforms.ToTensor()])
+        self.img_size = 256
+        self.transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256,256)),torchvision.transforms.ToTensor()])
 
     def __len__(self):
         return len(self.bill_frame)
@@ -40,12 +41,12 @@ class BillDataset(Dataset):
         #print(user_num)
         #print(type(user_num[0]))
         details = user_num
-        img=img.resize([512,512])
-        img.save("testing.jpg")
+        img=img.resize([256,256])
+        #img.save("testing.jpg")
         img = self.transform(img)
         if img.shape[0] == 1:
             #print(f"{img_name} has only 1 channel")
-            img = img * torch.ones((3,512,512))
+            img = img * torch.ones((3,256,256))
         details = torch.from_numpy(details)
     
         return img, details

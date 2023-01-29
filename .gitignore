@@ -8,3 +8,4 @@ model/__pycache__/model.cpython-38.pyc
 
 min_training_loss_model.pth
 min_val_loss_model.pth
+*.pth
